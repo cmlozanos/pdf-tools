@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox minHeight="400.0" minWidth="640.0" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.cmlozano.tool.pdftools.view.scene.ViewController">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+         <children>
+            <Pane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#selectFiles" prefHeight="25.0" prefWidth="132.0" text="Seleccionar Ficheros" />
+                  <Button layoutX="149.0" layoutY="14.0" mnemonicParsing="false" onAction="#clearFiles" prefHeight="25.0" prefWidth="132.0" text="Eliminar Ficheros" />
+                  <Label layoutX="442.0" layoutY="14.0" prefHeight="25.0" prefWidth="132.0" text="Ficheros Seleccionados" />
+                  <TextField fx:id="fileCount" layoutX="574.0" layoutY="14.0" prefHeight="25.0" prefWidth="53.0" />
+                  <ListView fx:id="list" layoutX="14.0" layoutY="49.0" prefHeight="212.0" prefWidth="614.0" />
+                  <Button layoutX="14.0" layoutY="277.0" mnemonicParsing="false" onAction="#selectFolder" text="Seleccionar Destino" />
+                  <TextField fx:id="folder" layoutX="149.0" layoutY="277.0" prefHeight="25.0" prefWidth="479.0" />
+                  <Button layoutX="14.0" layoutY="321.0" mnemonicParsing="false" onAction="#launch" prefHeight="25.0" prefWidth="120.0" text="Empezar" />
+                  <ProgressBar fx:id="launchProgress" layoutX="149.0" layoutY="325.0" prefHeight="18.0" prefWidth="479.0" progress="0.0" />
+                  <Label layoutX="541.0" layoutY="378.0" prefHeight="17.0" prefWidth="99.0" text="Pdf Merge v1.0.0" />
+               </children>
+            </Pane>
+         </children>
+    </AnchorPane>
+  </children>
+</VBox>
