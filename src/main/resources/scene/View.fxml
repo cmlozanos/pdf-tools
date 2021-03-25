@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.text.*?>
 
-<VBox minHeight="400.0" minWidth="640.0" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.cmlozano.tool.pdftools.view.scene.ViewController">
+<VBox minHeight="400.0" minWidth="640.0" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.cmlozano.tool.pdftools.view.scene.ViewController">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
@@ -20,9 +16,10 @@
                   <ListView fx:id="list" layoutX="14.0" layoutY="49.0" prefHeight="212.0" prefWidth="614.0" />
                   <Button layoutX="14.0" layoutY="277.0" mnemonicParsing="false" onAction="#selectFolder" text="Seleccionar Destino" />
                   <TextField fx:id="folder" layoutX="149.0" layoutY="277.0" prefHeight="25.0" prefWidth="479.0" />
-                  <Button layoutX="14.0" layoutY="321.0" mnemonicParsing="false" onAction="#launch" prefHeight="25.0" prefWidth="120.0" text="Empezar" />
+                  <Button layoutX="14.0" layoutY="321.0" mnemonicParsing="false" onAction="#launchMerge" prefHeight="25.0" prefWidth="120.0" text="Merge" />
+                  <Button layoutX="14.0" layoutY="353.0" mnemonicParsing="false" onAction="#launchSplit" prefHeight="25.0" prefWidth="120.0" text="Split" />
                   <ProgressBar fx:id="launchProgress" layoutX="149.0" layoutY="325.0" prefHeight="18.0" prefWidth="479.0" progress="0.0" />
-                  <Label layoutX="541.0" layoutY="378.0" prefHeight="17.0" prefWidth="99.0" text="Pdf Merge v1.0.0" />
+                  <Label layoutX="541.0" layoutY="378.0" prefHeight="17.0" prefWidth="99.0" text="Pdf Merge v2.0.0" />
                </children>
             </Pane>
          </children>

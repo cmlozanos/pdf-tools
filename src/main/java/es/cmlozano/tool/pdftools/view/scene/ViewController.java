@@ -1,6 +1,7 @@
 package es.cmlozano.tool.pdftools.view.scene;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,19 +10,19 @@ import es.cmlozano.tool.pdftools.bean.PdfMergeUtilityRequestBean;
 import es.cmlozano.tool.pdftools.controller.Controller;
 import es.cmlozano.tool.pdftools.utils.AlertUtils;
 import es.cmlozano.tool.pdftools.view.MainApp;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import org.apache.pdfbox.multipdf.Splitter;
+import org.apache.pdfbox.pdmodel.PDDocument;
 
 /**
  * View Controller for scene.xml
@@ -64,68 +65,55 @@ public class ViewController {
 
 	public ViewController() {
 		super();
-		// System.out.println("Initialized Controller: " +
-		// this.getClass().getSimpleName());
 	}
 
 	@FXML
 	private void initialize() {
-		// System.out.println("Initialize Method");
 		this.clear();
 
 		this.fileChooser.getExtensionFilters().add(new ExtensionFilter(PDF_FILES, "*." + PDF_EXTENSION));
 
-		this.list.setOnDragOver(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(final DragEvent event) {
-				final Dragboard db = event.getDragboard();
-				if (db.hasFiles()) {
-					if (ViewController.this.validateAllFilesExtensions(db)) {
-						event.acceptTransferModes(TransferMode.COPY);
-					}
-				} else {
-					event.consume();
+		this.list.setOnDragOver(event -> {
+			final Dragboard db = event.getDragboard();
+			if (db.hasFiles()) {
+				if (ViewController.this.validateAllFilesExtensions(db)) {
+					event.acceptTransferModes(TransferMode.COPY);
 				}
+			} else {
+				event.consume();
 			}
 		});
 
-		this.list.setOnDragDropped(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(final DragEvent event) {
-				final Dragboard db = event.getDragboard();
-				boolean success = false;
-				if (db.hasFiles()) {
-					success = true;
-					for (final File file : db.getFiles()) {
-						final String absolutePath = file.getAbsolutePath();
-						ViewController.this.list.getItems().add(absolutePath);
-						System.out.println(absolutePath);
-					}
-					ViewController.this.fileCount.setText(String.valueOf(ViewController.this.list.getItems().size()));
+		this.list.setOnDragDropped(event -> {
+			final Dragboard db = event.getDragboard();
+			boolean success = false;
+			if (db.hasFiles()) {
+				success = true;
+				for (final File file : db.getFiles()) {
+					final String absolutePath = file.getAbsolutePath();
+					ViewController.this.list.getItems().add(absolutePath);
+					System.out.println(absolutePath);
 				}
-				event.setDropCompleted(success);
-				event.consume();
+				ViewController.this.fileCount.setText(String.valueOf(ViewController.this.list.getItems().size()));
 			}
-
+			event.setDropCompleted(success);
+			event.consume();
 		});
 
 	}
 
 	private boolean validateAllFilesExtensions(final Dragboard db) {
 		return VALID_EXTENSIONS.containsAll(db.getFiles().stream()
-				.map(t -> ViewController.this.getExtension(t.getName())).collect(Collectors.toList()));
+				.map(File::getName).map(ViewController::getExtension).collect(Collectors.toList()));
 	}
 
 	// Method to to get extension of a file
-	private String getExtension(final String fileName) {
-		final String extension = "";
-
+	private static String getExtension(final String fileName) {
 		final int i = fileName.lastIndexOf('.');
 		if (i > 0 && i < fileName.length() - 1) {
 			return fileName.substring(i + 1).toLowerCase();
 		}
-
-		return extension;
+		return "";
 	}
 
 	public void selectFiles() {
@@ -161,7 +149,7 @@ public class ViewController {
 		}
 	}
 
-	public boolean launch() {
+	public boolean launchMerge() {
 		// System.out.println("launch Method");
 		this.clearProgress();
 		if (!this.validateInputParams()) {
@@ -199,6 +187,74 @@ public class ViewController {
 
 		AlertUtils.showAndWaitAlertError(PROGRESS_COMPLETE, THE_FILE_WAS_NO_CREATED);
 		return false;
+	}
+
+	public boolean launchSplit() {
+		// System.out.println("launch Method");
+		this.clearProgress();
+		if (!this.validateInputParams()) {
+			return false;
+		}
+
+		final Alert alert = this.showBlockAlert();
+
+		this.launchProgress.setProgress(0.1);
+		// final long startTime = System.currentTimeMillis(); //
+		// System.out.println("Initial Time: " + new Date(startTime));
+		final String destinationFileName = this.folder.getText();
+
+		this.launchProgress.setProgress(0.2);
+//		final PdfMergeUtilityRequestBean pdfMergerUtilityRequestBean = new PdfMergeUtilityRequestBean(
+//				destinationFileName, this.list.getItems());
+
+
+		this.launchProgress.setProgress(0.3);
+		var file = new File(this.list.getItems().get(0));
+		boolean result = splitFile(file);
+		this.launchProgress.setProgress(0.6);
+
+		this.launchProgress.setProgress(1);
+
+		AlertUtils.alertManualClose(alert);
+
+		if (result) {
+			AlertUtils.showAndWaitAlertInfo(PROGRESS_COMPLETE, THE_FILE_WAS_SUCESSFULLY_CREATED);
+			return result;
+		}
+
+		AlertUtils.showAndWaitAlertError(PROGRESS_COMPLETE, THE_FILE_WAS_NO_CREATED);
+		return result;
+	}
+
+	private boolean splitFile(File file) {
+		String fileName = file.getAbsolutePath();
+		System.out.println("Splitting pdf: " + fileName);
+		System.out.println("fileName: " + fileName);
+
+//		if (fileName == null || fileName.isEmpty() || !Files.exists(Path.of(fileName), LinkOption.NOFOLLOW_LINKS)) {
+//			throw new Exception("invalid file");
+//		}
+
+		PDDocument doc;
+		try {
+			doc = loadDocument(fileName);
+			List<PDDocument> pages = new Splitter().split(doc);
+			for (int i = 0; i < pages.size(); i++) {
+				pages.get(i).save(fileName + "." + i + ".pdf");
+			}
+			return true;
+
+			//JOptionPane.showMessageDialog(frame, "Completado", "Success", JOptionPane.INFORMATION_MESSAGE);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	private static PDDocument loadDocument(String fileName) throws IOException {
+		File file = new File(fileName);
+		PDDocument doc = PDDocument.load(file);
+		return doc;
 	}
 
 	public Alert showBlockAlert() {
