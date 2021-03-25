@@ -13,9 +13,9 @@ import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
-	private static final String SCENE_VIEW_FXML = "scene/View.fxml";
+	private static final String SCENE_VIEW_FXML = "/scene/View.fxml";
 	private static final String APP_ICON = "app.png";
-	private static final String TITLE = "Pdf Merge";
+	private static final String TITLE = "Pdf Tools";
 	private Stage stage;
 	private VBox rootLayout;
 	private FXMLLoader loader;
