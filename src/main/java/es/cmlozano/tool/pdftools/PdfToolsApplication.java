@@ -1,6 +1,6 @@
 package es.cmlozano.tool.pdftools;
 
-import es.cmlozano.tool.pdftools.view.MainApp;
+import es.cmlozano.tool.pdftools.view.ViewApplication;
 
 /**
  * This is a simple mock to launch JavaFX Application
@@ -10,10 +10,8 @@ import es.cmlozano.tool.pdftools.view.MainApp;
  */
 public class PdfToolsApplication {
 
-	private static MainApp View = new MainApp();
-
 	public static void main(final String[] args) {
-		View.launch();
+		new ViewApplication().launch();
 	}
 
 }
