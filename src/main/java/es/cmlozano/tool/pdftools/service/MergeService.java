@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class MergeService {
 
 	private static final String PDF_EXTENSION = "pdf";
-	private static final String PDF_MERGED_FINAL_NAME = "Pdf-Combinado"+"." + PDF_EXTENSION;
+	private static final String PDF_MERGED_FINAL_NAME = "pdf-combinado"+"." + PDF_EXTENSION;
 	private static final String DIRECTORY_SEPARATOR = "\\";
 
 	/**
@@ -45,7 +45,8 @@ public class MergeService {
 	}
 
 	private String getDestinationFileName(PdfMergeUtilityRequestBean requestBean, ArrayList<String> fileNames) {
-		return requestBean.getDestinationFolder() + DIRECTORY_SEPARATOR + fileNames.stream().collect(Collectors.joining("-")) + "." + PDF_EXTENSION;
+		// return requestBean.getDestinationFolder() + DIRECTORY_SEPARATOR + fileNames.stream().collect(Collectors.joining("-")) + "." + PDF_EXTENSION;
+		return requestBean.getDestinationFolder() + DIRECTORY_SEPARATOR + PDF_MERGED_FINAL_NAME;
 	}
 
 }

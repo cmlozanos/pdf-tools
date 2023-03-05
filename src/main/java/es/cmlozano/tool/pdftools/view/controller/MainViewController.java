@@ -34,6 +34,6 @@ public class MainViewController {
 	}
 
     public void showAbout(ActionEvent actionEvent) {
-		AlertUtils.getAlertInfo("PDF Tools version 2.0", "Developer: Carlos Manuel Lozano Soto").show();
+		AlertUtils.getAlertInfo("PDF Tools version 2.1", "Developer: Carlos Manuel Lozano Soto").show();
     }
 }
